@@ -5,6 +5,6 @@ class help:
 
     def printString(self):
         print(self.string.upper())
-obj = help()
-obj.getString()
-obj.printString()
+help = help()
+help.getString()
+help.printString()
