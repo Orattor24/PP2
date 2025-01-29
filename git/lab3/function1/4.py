@@ -8,6 +8,9 @@ def filter_num(num):
 
 def filter_prime(numbers):
     return [num for num in numbers if filter_num(num)]
+
+
+
 size = int(input())
 numbers = []
 for i in range(size):
