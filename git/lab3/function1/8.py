@@ -6,6 +6,7 @@ def spy_game(nums):
             nums2.append(nums[i])
         if nums[i] == 7:
             nums2.append(nums[i])
+
     if nums2[0] ==0 and nums2[1] == 0 and nums2[2] == 7:
         return True
     else:
