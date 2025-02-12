@@ -25,6 +25,7 @@ def my_function(*kids):
 
 my_function("Emil", "Tobias", "Linus")
 
+
 #keyword arguments
 def my_function(child3, child2, child1):
   print("The youngest child is " + child3)

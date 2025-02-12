@@ -3,7 +3,7 @@ thisdict = {
   "model": "Mustang",
   "year": 1964
 }
-thisdict["color"] = "red"
+thisdict["color"] = "blue"
 print(thisdict)
 
 #update
@@ -14,3 +14,4 @@ thisdict = {
   "year": 1964
 }
 thisdict.update({"color": "red"})
+print(thisdict)
