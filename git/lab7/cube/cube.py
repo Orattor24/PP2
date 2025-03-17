@@ -26,7 +26,7 @@ while running:
 
     # Получаем состояние клавиш
     pressed = pygame.key.get_pressed()
-
+#
     # Обновляем координаты с учетом границ экрана
     if pressed[pygame.K_UP] and y - speed - radius >= 0:
         y -= speed
