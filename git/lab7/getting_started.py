@@ -7,6 +7,8 @@ is_blue = True
 x = 30
 y = 30
 
+
+
 clock = pygame.time.Clock()
 
 while not done:
