@@ -5,13 +5,13 @@ import time
 pygame.init()
 
 # Размеры окон, скорость и сколько очков
-WIDTH, HEIGHT = 400, 600
-PLAYER_SPEED = 5
-ENEMY_SPEED = 5
-MONEY_SPEED = 5
-FPS = 60
-SCORE = 0
-SPEED = 0
+WIDTH, HEIGHT = 400, 600 #Размер окна
+PLAYER_SPEED = 5#Скорость игрока
+ENEMY_SPEED = 5#Скорость врага
+MONEY_SPEED = 5#скорость монетки
+FPS = 60 #частота смены кадров
+SCORE = 0#очки за монеты
+SPEED = 0#сколько монет собрал, чтобы увелмчмит скорость
 
 # Создание окна
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -38,11 +38,11 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = player_img #Фотка
-        self.rect = self.image.get_rect(midbottom=(WIDTH // 2, HEIGHT - 10))
+        self.rect = self.image.get_rect(midbottom=(WIDTH // 2, HEIGHT - 10))#размеры
 
     #Чтобы двигалось на кнопки жать всякие
     def move(self):
-        keys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed() #нажатие клавиш
         if keys[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x -= PLAYER_SPEED
         if keys[pygame.K_RIGHT] and self.rect.right < WIDTH:
@@ -51,7 +51,7 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = enemy_img
+        self.image = enemy_img#фотка врага
         self.rect = self.image.get_rect(midtop=(random.randint(40, WIDTH - 40), 0))
 
     def move(self):
@@ -70,10 +70,12 @@ class Money(pygame.sprite.Sprite):
     def move(self):
         self.rect.y += MONEY_SPEED
         if self.rect.top > HEIGHT:
-            self.reset_position()
+            self.reset_position()#создает новую монетку
+
 
     def reset_position(self):
         self.rect.midtop = (random.randint(40, WIDTH - 40), 0)
+
 
 
 # Создание объектов
@@ -116,10 +118,12 @@ while running:
         running = False
 
     if pygame.sprite.spritecollideany(player, money_sprites):
-        SCORE += 1
+        SCORE += random.randint(1,5)
         SPEED += 1
         print(f"Score: {SCORE}")
         money.reset_position()
+        if SPEED % 5 == 0:
+            ENEMY_SPEED +=1
     if pygame.sprite.spritecollideany(enemy, money_sprites):
         money.reset_position()
 
