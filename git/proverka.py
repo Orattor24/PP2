@@ -1,40 +1,33 @@
-# Повторное построение графика для вывода изображения
-fig, ax = plt.subplots(figsize=(6, 6))
-ax.set_xlim(-5, 5)
-ax.set_ylim(-5, 5)
-ax.set_xlabel("x")
-ax.set_ylabel("y")
-ax.set_title("Векторы r, v и a")
+import matplotlib.pyplot as plt
+import networkx as nx
 
-# Рисуем окружность x^2 + y^2 = 16
-ax.plot(circle_x, circle_y, 'gray', linestyle='dashed', alpha=0.5)
+# Создаем граф для карты катакомб
+G = nx.DiGraph()
 
-# Отрисовка векторов
-for t in t_values:
-    r_vec = r(t)
-    v_vec = v(t)
-    a_vec = a(t)
+# Добавляем комнаты и пути между ними
+rooms = {
+    "Вход в катакомбы": (0, 5),
+    "Коридор иллюзий": (2, 4),
+    "Часовня Глухих": (4, 3),
+    "Кровавый лабиринт": (6, 2),
+    "Зал Саркофага": (8, 1)
+}
 
-    # Радиус-вектор r
-    ax.quiver(0, 0, r_vec[0], r_vec[1], angles='xy', scale_units='xy', scale=1, color='b',
-              label="r" if t == np.pi else "")
+# Добавляем пути
+edges = [
+    ("Вход в катакомбы", "Коридор иллюзий"),
+    ("Коридор иллюзий", "Часовня Глухих"),
+    ("Часовня Глухих", "Кровавый лабиринт"),
+    ("Кровавый лабиринт", "Зал Саркофага")
+]
 
-    # Вектор скорости v
-    ax.quiver(r_vec[0], r_vec[1], v_vec[0], v_vec[1], angles='xy', scale_units='xy', scale=1, color='g',
-              label="v" if t == np.pi else "")
+G.add_nodes_from(rooms.keys())
+G.add_edges_from(edges)
 
-    # Вектор ускорения a
-    ax.quiver(r_vec[0], r_vec[1], a_vec[0], a_vec[1], angles='xy', scale_units='xy', scale=1, color='r',
-              label="a" if t == np.pi else "")
-
-# Легенда
-ax.legend()
-ax.grid()
-
-# Сохранение изображения
-plot_path = "/mnt/data/vector_plot.png"
-plt.savefig(plot_path)
+# Создаем визуализацию
+plt.figure(figsize=(8, 5))
+pos = rooms
+nx.draw(G, pos, with_labels=True, node_size=3000, node_color="lightgray", font_size=10, font_weight="bold", edge_color="black")
+plt.title("Карта катакомб под храмом Закрытого Ока", fontsize=12, fontweight="bold")
 plt.show()
 
-# Вывод пути к изображению
-plot_path
