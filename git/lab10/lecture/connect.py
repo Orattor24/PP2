@@ -1,6 +1,6 @@
 import psycopg2
 from config import load_config
-
+#
 def connect():
     """Подключение к серверу PostgreSQL"""
     try:

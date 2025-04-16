@@ -11,7 +11,7 @@ def create_tables():
             NUMBER VARCHAR(255) NOT NULL        
         )
         """
-    ]
+    ]#
     try:
         config = load_config()
         with psycopg2.connect(**config) as conn:

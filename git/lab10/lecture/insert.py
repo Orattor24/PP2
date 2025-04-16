@@ -5,7 +5,7 @@ def insert_vendor(vendor_name):
     sql = """INSERT INTO vendors(vendor_name)
              VALUES(%s) RETURNING vendor_id;"""
     vendor_id = None
-    config = load_config()
+    config = load_config()#
     try:
         with  psycopg2.connect(**config) as conn:
             with  conn.cursor() as cur:

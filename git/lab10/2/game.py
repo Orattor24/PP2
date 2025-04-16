@@ -191,7 +191,7 @@ while running:
             save_score(user_id, snake.score, snake.level)
             running = False
             continue
-
+#
         # Появление бонусной еды на 2 уровне
         if snake.level >= 2 and bonus_food is None:
             bonus_food = Food("bonus")

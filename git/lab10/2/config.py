@@ -3,7 +3,7 @@ from configparser import ConfigParser
 def load_config(filename='database.ini', section='postgresql'):
     parser = ConfigParser()
     parser.read(filename)
-
+#
     config = {}
     if parser.has_section(section):
         params = parser.items(section)

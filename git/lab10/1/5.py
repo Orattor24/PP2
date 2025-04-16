@@ -31,7 +31,7 @@ if __name__ == '__main__':
     print("Удаление из phonebooks:")
     print("1 - Удалить по имени")
     print("2 - Удалить по номеру")
-
+#
     choice = input("Ваш выбор: ")
 
     if choice == '1':

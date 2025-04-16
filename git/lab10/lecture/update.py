@@ -4,7 +4,7 @@ from config import load_config
 
 def update_vendor(vendor_id, vendor_name):
     """ Update vendor name based on the vendor id """
-
+#
     updated_row_count = 0
 
     sql = """ UPDATE vendors

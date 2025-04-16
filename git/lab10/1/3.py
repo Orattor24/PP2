@@ -39,7 +39,7 @@ def update_phonebook_entry(entry_id, new_name=None, new_number=None):
         print("Ошибка при обновлении:", error)
 
 if __name__ == '__main__':
-    print("Обновление записи в таблице phonebooks.")
+    print("Обн#овление записи в таблице phonebooks.")
     try:
         entry_id = int(input("Введите ID записи для обновления: "))
         new_name = input("Введите новое имя (оставьте пустым, если не менять): ").strip()

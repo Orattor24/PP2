@@ -12,7 +12,7 @@ def insert_from_csv(filename):
 
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cur:
-                cur.executemany("INSERT INTO phonebooks(name, number) VALUES (%s, %s)", entries)
+     #           cur.executemany("INSERT INTO phonebooks(name, number) VALUES (%s, %s)", entries)
                 conn.commit()
                 print(f"Inserted {len(entries)} entries from {filename}")
     except Exception as e:

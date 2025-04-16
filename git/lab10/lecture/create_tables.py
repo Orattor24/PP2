@@ -36,7 +36,7 @@ def create_tables():
                     REFERENCES parts (part_id)
                     ON UPDATE CASCADE ON DELETE CASCADE
         )
-        """)
+        """)#
     try:
         config = load_config()
         with psycopg2.connect(**config) as conn:

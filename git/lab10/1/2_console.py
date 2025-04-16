@@ -8,7 +8,7 @@ def insert_phonebook_entry(name, number):
     config = load_config()
     try:
         with psycopg2.connect(**config) as conn:
-            with conn.cursor() as cur:
+      #      with conn.cursor() as cur:
                 cur.execute(sql, (name, number))
                 entry_id = cur.fetchone()[0]
                 conn.commit()

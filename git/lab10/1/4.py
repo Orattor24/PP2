@@ -48,7 +48,7 @@ if __name__ == '__main__':
     choice = input("Ваш выбор: ")
 
     if choice == '1':
-        query_all()
+        query_all()#
     elif choice == '2':
         name = input("Введите имя или часть имени: ")
         query_by_name(name)

@@ -2,7 +2,7 @@ import psycopg2
 from config import load_config
 
 
-
+#
 def insert_many_phonebook_entries(entries):
     """Вставка нескольких записей в таблицу phonebooks"""
     sql = "INSERT INTO phonebooks(name, number) VALUES(%s, %s)"
