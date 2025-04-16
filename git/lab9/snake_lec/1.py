@@ -90,14 +90,14 @@ class Food:
 
     #Создание совсем нвоого фрукта после того как его схватили
     def generate_new_position(self, snake):
-
         while True:
             new_x = random.randint(0, WIDTH // CELL - 1)
             new_y = random.randint(0, HEIGHT // CELL - 1)
-            # Проверка, чтобы еда не появилась на змейке
             if not any(segment.x == new_x and segment.y == new_y for segment in snake.body):
                 self.pos = Point(new_x, new_y)
+                self.timer = time.time() + random.randint(5, 10)  # <--- Вот эта строка!
                 break
+
 
 FPS = 5
 clock = pygame.time.Clock()
