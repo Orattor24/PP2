@@ -15,7 +15,7 @@ HEIGHT = 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 CELL = 30
 pygame.display.set_caption("Snake Game")
-
+#получаем данные у пользователя. точнее загружаем на бд
 def get_user(username):
     config = load_config()
     with psycopg2.connect(**config) as conn:
@@ -27,18 +27,21 @@ def get_user(username):
                 cur.execute("SELECT score, level FROM user_scores WHERE user_id = %s", (user_id,))
                 score_data = cur.fetchone()
                 if score_data:
-                    return user_id, 0, 1  # Начинаем заново
+                    print(f"[INFO] Пользователь '{username}' найден. Прошлый счёт: {score_data[0]}, Уровень: {score_data[1]}")
                 else:
                     cur.execute("INSERT INTO user_scores (user_id, score, level) VALUES (%s, 0, 1)", (user_id,))
                     conn.commit()
-                    return user_id, 0, 1
+                    print(f"[INFO] Пользователь '{username}' найден, но у него не было очков. Стартуем с 0 очков.")
+                return user_id, 0, 1  # ВСЕГДА начинаем с нуля
             else:
                 cur.execute("INSERT INTO users (username) VALUES (%s) RETURNING id", (username,))
                 user_id = cur.fetchone()[0]
                 cur.execute("INSERT INTO user_scores (user_id, score, level) VALUES (%s, 0, 1)", (user_id,))
                 conn.commit()
+                print(f"[INFO] Новый пользователь '{username}' зарегистрирован.")
                 return user_id, 0, 1
 
+#сохраняем именно рекорд
 def save_score(user_id, score, level):
     config = load_config()
     with psycopg2.connect(**config) as conn:
@@ -53,18 +56,18 @@ def save_score(user_id, score, level):
             else:
                 cur.execute("INSERT INTO user_scores (user_id, score, level) VALUES (%s, %s, %s)", (user_id, score, level))
                 conn.commit()
-
+#рисуем клетки
 def draw_grid_chess():
     colors = [colorWHITE, colorGRAY]
     for i in range(HEIGHT // CELL):
         for j in range(WIDTH // CELL):
             pygame.draw.rect(screen, colors[(i + j) % 2], (j * CELL, i * CELL, CELL, CELL))
-
+#точка
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-
+#змея
 class Snake:
     def __init__(self, score=0, level=1):
         self.body = [Point(10, 11), Point(10, 12), Point(10, 13), Point(10, 14), Point(10, 15)]
@@ -72,6 +75,7 @@ class Snake:
         self.score, self.level = score, level
         self.eat = 0
 
+    #движение
     def move(self):
         for i in range(len(self.body) - 1, 0, -1):
             self.body[i].x = self.body[i - 1].x
@@ -80,20 +84,23 @@ class Snake:
         self.body[0].y += self.dy
         return self.check_collision_with_self() or self.check_wall_collision()
 
-
+    #отрисовка
     def draw(self):
         pygame.draw.rect(screen, colorRED, (self.body[0].x * CELL, self.body[0].y * CELL, CELL, CELL))
         for segment in self.body[1:]:
             pygame.draw.rect(screen, colorYELLOW, (segment.x * CELL, segment.y * CELL, CELL, CELL))
 
+    #проверка столкновения с чем то
     def check_collision_with_self(self):
         head = self.body[0]
         return any(segment.x == head.x and segment.y == head.y for segment in self.body[1:])
 
+    #проверка столкновения со стеной
     def check_wall_collision(self):
         head = self.body[0]
         return head.x < 0 or head.x >= WIDTH // CELL or head.y < 0 or head.y >= HEIGHT // CELL
 
+    #с едой
     def check_collision(self, food):
         if self.body[0].x == food.pos.x and self.body[0].y == food.pos.y:
             if food.kind == "normal":
@@ -110,10 +117,12 @@ class Snake:
             food.generate_new_position(self)
             return True
         return False
+#класс стены
 class Wall:
     def __init__(self):
         self.pos = None
 
+    #создание новой позиции
     def generate_new_position(self, snake, food, walls):
         while True:
             x = random.randint(0, WIDTH // CELL - 1)
@@ -124,19 +133,22 @@ class Wall:
                 self.pos = Point(x, y)
                 break
 
+    #отрисовка
     def draw(self):
         pygame.draw.rect(screen, colorBLACK, (self.pos.x * CELL, self.pos.y * CELL, CELL, CELL))
-
+#еда
 class Food:
     def __init__(self, kind="normal"):
         self.kind = kind
         self.pos = Point(random.randint(0, WIDTH // CELL - 1), random.randint(0, HEIGHT // CELL - 1))
         self.timer = time.time() + random.randint(5, 10)
 
+    #отрисовка
     def draw(self):
         color = colorGREEN if self.kind == "normal" else colorORANGE
         pygame.draw.rect(screen, color, (self.pos.x * CELL, self.pos.y * CELL, CELL, CELL))
 
+    #создание новой после съедения
     def generate_new_position(self, snake):
         while True:
             new_x = random.randint(0, WIDTH // CELL - 1)
@@ -159,7 +171,7 @@ walls = []
 current_level = snake.level  # Чтобы отслеживать смену уровня
 
 running = True
-
+#основная логика
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -181,6 +193,7 @@ while running:
                     snake.dx, snake.dy = 0, -1
 
     if not paused:
+        #завершение игры
         game_over = snake.move()
         for wall in walls:
             if snake.body[0].x == wall.pos.x and snake.body[0].y == wall.pos.y:
@@ -195,13 +208,13 @@ while running:
         # Появление бонусной еды на 2 уровне
         if snake.level >= 2 and bonus_food is None:
             bonus_food = Food("bonus")
-
+        #новый уровень и создание самой стены
         if snake.level > current_level:
             current_level = snake.level
             wall = Wall()
             wall.generate_new_position(snake, food, walls)
             walls.append(wall)
-
+        #если змея соприкоснулась с едой
         if snake.check_collision(food):
             snake.level = 1 + snake.score // 5
             FPS = 5 + (snake.level - 1)

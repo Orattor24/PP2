@@ -8,11 +8,11 @@ def insert_from_csv(filename):
     try:
         with open(filename, mode='r', newline='', encoding='utf-8') as file:
             reader = csv.DictReader(file)
-            entries = [(row['name'], row['number']) for row in reader]
+            entries = [(row['name'],row['surname'], row['number']) for row in reader]
 
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cur:
-                cur.executemany("INSERT INTO phonebooks(name, number) VALUES (%s, %s)", entries)
+                cur.executemany("INSERT INTO phonebooks(name,surname,number) VALUES (%s,%s,%s)", entries)
                 conn.commit()
                 print(f"Inserted {len(entries)} entries from {filename}")
     except Exception as e:
