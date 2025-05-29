@@ -23,7 +23,7 @@ def query_with_pagination(limit=5, offset=0, name_filter=None, surname_filter=No
 
     where_clause = " WHERE " + " AND ".join(filters) if filters else ""
 
-    # Add pagination to the query
+    # Добавляем нумерацию страниц для очереди
     paginated_sql = f"{base_sql}{where_clause} ORDER BY id LIMIT %s OFFSET %s"
     count_sql += where_clause
 
@@ -34,35 +34,35 @@ def query_with_pagination(limit=5, offset=0, name_filter=None, surname_filter=No
     try:
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cur:
-                # Get total count
+                # Получить окончательное количество
                 cur.execute(count_sql, params)
                 total_count = cur.fetchone()[0]
 
-                # Get paginated results
+                # Результат страницы
                 cur.execute(paginated_sql, params + [limit, offset])
                 records = cur.fetchall()
 
     except (Exception, psycopg2.DatabaseError) as error:
-        print("Error during query:", error)
+        print("Ошибка в очереди:", error)
         return ([], 0)
 
     return (records, total_count)
 
 
 def display_paginated_results():
-    """Interactive console interface for paginated queries"""
+    """Тут сделай интерактивный интерфейс для управления"""
     limit = 5  #Обычный размер карты
     offset = 0
     current_page = 1
     total_pages = 1
 
-    # Filter options
+    # Фильтры
     name_filter = None
     surname_filter = None
     number_filter = None
 
     while True:
-        # Query data with current parameters
+        # список с введеными параметрами фильтра
         records, total_count = query_with_pagination(
             limit=limit,
             offset=offset,
@@ -73,27 +73,27 @@ def display_paginated_results():
 
         total_pages = max(1, (total_count + limit - 1) // limit)
 
-        #Результаты всего этого выводим
-        print("\n=== Phonebook Entries ===")
-        print(f"Page {current_page} of {total_pages} (Total: {total_count} records)")
+        #Результаты всего этого выводится
+        print("\n=== Номерная книжка ===")
+        print(f"Страница {current_page} из {total_pages} (Всего: {total_count} записей)")
         print("------------------------")
 
         if records:
             for record in records:
                 print(f"ID: {record[0]}, Name: {record[1]}, Surname: {record[2]}, Number: {record[3]}")
         else:
-            print("No records found.")
+            print("Не найдено записей.")
 
-        # Navigation menu
-        print("\nOptions:")
-        print("n - Next page")
-        print("p - Previous page")
-        print("f - Apply filters")
-        print("c - Clear filters")
-        print("l - Change page size")
-        print("q - Quit")
+        # Меню
+        print("\nНастройки:")
+        print("n - Следующая страница")
+        print("p - Предыдущая страница")
+        print("f - Применить фильтр")
+        print("c - Очистить фильтр")
+        print("l - Изменить размер страницы")
+        print("q - Выход")
 
-        choice = input("Your choice: ").lower()
+        choice = input("Твой выбор: ").lower()
 
         if choice == 'n' and current_page < total_pages:
             offset += limit

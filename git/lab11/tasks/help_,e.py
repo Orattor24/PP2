@@ -59,3 +59,4 @@ if __name__ == '__main__':
     print("Удаление из phonebooks:")
     name = input("Введите имя (или часть): ")
     delete_by_name(name)
+

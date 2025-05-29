@@ -59,8 +59,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.top > HEIGHT: #Если высота больше размера окна, то создаем новую копию рандомно с 0 координат
             self.rect.midtop = (random.randint(40, WIDTH - 40), 0)
 
-
-
+pygame.Rect
 class Money(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
