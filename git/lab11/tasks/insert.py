@@ -3,12 +3,12 @@ from config import load_config
 
 
 def upsert_user_phone(name, surname, phone):
-    """Insert new user or update phone if user exists"""
-    # Check if user exists
+    """Вставляем нового пользователя или же обновляем если существует"""
+    # Проверка есть ли пользователь
     check_sql = """SELECT id, number FROM phonebooks 
                    WHERE name = %s AND surname = %s"""
 
-    # SQL for insert and update
+    # Команды чтобы вставить / обновить
     insert_sql = """INSERT INTO phonebooks(name, surname, number)
                     VALUES(%s, %s, %s) RETURNING id;"""
     update_sql = """UPDATE phonebooks SET number = %s
@@ -18,39 +18,39 @@ def upsert_user_phone(name, surname, phone):
     try:
         with psycopg2.connect(**config) as conn:
             with conn.cursor() as cur:
-                # Check if user exists
+                # Проверка существования
                 cur.execute(check_sql, (name, surname))
                 result = cur.fetchone()
-
+                #Если все таки правда. То обновляем
                 if result:
                     user_id, current_number = result
                     if current_number != phone:
                         # Update if phone is different
                         cur.execute(update_sql, (phone, name, surname))
                         conn.commit()
-                        print(f"Updated phone for {name} {surname} from {current_number} to {phone}")
+                        print(f"Обновление пользователя {name} {surname} номер телефона с {current_number} на {phone}")
                     else:
-                        print(f"Phone number for {name} {surname} is already {phone}")
+                        print(f"Номер телефона для {name} {surname} стал {phone}")
                 else:
-                    # Insert new user
+                    # Вставка нового пользователя
                     cur.execute(insert_sql, (name, surname, phone))
                     user_id = cur.fetchone()[0]
                     conn.commit()
-                    print(f"Inserted new user {name} {surname} with ID {user_id}")
+                    print(f"Добавлен новый пользователь {name} {surname} у которого айди {user_id}")
 
     except (Exception, psycopg2.DatabaseError) as error:
-        print("Error:", error)
+        print("Ошибка:", error)
 
 
 def upsert_from_console():
-    """Get user input and call upsert function"""
-    print("Enter user details (or 'exit' to stop):")
+    """Забираем инпуты"""
+    print("Вводим информацию (или введи команду 'exit' чтобы остановить):")
     while True:
-        name = input("Enter name: ").strip()
+        name = input("Введи имя: ").strip()
         if name.lower() == 'exit':
             break
-        surname = input("Enter surname: ").strip()
-        phone = input("Enter phone number: ").strip()
+        surname = input("Фамилия: ").strip()
+        phone = input("Номер телефона: ").strip()
         upsert_user_phone(name, surname, phone)
 
 
